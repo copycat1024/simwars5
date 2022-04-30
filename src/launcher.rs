@@ -1,4 +1,7 @@
-use crate::{app::TestApp, tag::Tag};
+use crate::{
+    app::{App, TestApp},
+    tag::Tag,
+};
 use soyo::{
     logger::{Client, Server},
     tui::{backend::Vt100, Event, Key, Rect},
@@ -12,19 +15,19 @@ type Context = soyo::tui::Context<Backend>;
 pub fn launch() -> Result {
     let log = get_logger();
 
-    Lancher::new(&log).run()?;
+    Launcher::new(&log).run()?;
 
     log.print_raw();
 
     Ok(())
 }
 
-struct Lancher {
+struct Launcher {
     ctx: Context,
     log: Client,
 }
 
-impl Lancher {
+impl Launcher {
     pub fn new(log: &Server) -> Self {
         Self {
             ctx: get_context(log),
@@ -41,27 +44,39 @@ impl Lancher {
                     Event::Key { key } => {
                         if key == Key::ESC {
                             return Ok(());
-                        } else if key == Key::ENTER {
-                            self.start_app()?;
+                        } else {
+                            self.on_key(key)?;
                         }
                     }
                     _ => {}
                 }
+
+                self.render();
+                self.ctx.draw()?;
             }
-            let mut rect = Rect::new();
-            rect.xywh(0, 0, 16, 16);
-            self.ctx.render(rect, 2, |_x, _y, letter| {
-                *letter.c = 'x';
-            });
-            self.ctx.draw()?;
         }
     }
 
+    fn on_key(&mut self, key: Key) -> Result {
+        if key == Key::ENTER {
+            self.start_app()
+        } else {
+            Ok(())
+        }
+    }
+
+    fn render(&mut self) {
+        let rect = Rect::xywh(0, 0, 16, 16);
+        self.ctx.render(rect, 2, |_x, _y, letter| {
+            *letter.c = 'x';
+        });
+    }
+
     fn start_app(&mut self) -> Result {
-        writeln!(self.log, "App start");
-        let app = TestApp::new();
+        writeln!(self.log, "App start")?;
+        let mut app = TestApp::new();
         app.run(&mut self.ctx, &mut self.log)?;
-        writeln!(self.log, "App end");
+        writeln!(self.log, "App end")?;
 
         Ok(())
     }
