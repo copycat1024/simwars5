@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies.soyo]
 git = "https://github.com/copycat1024/soyo"
-branch = "master"
+branch = "dev"

@@ -1,25 +1,23 @@
 use soyo::{
+    logger::Client,
     tui::{backend::Backend, Color, Context, Event, Rect},
-    util::{LoggerServer, Result},
+    util::Result,
 };
+use std::io::Write;
 
-pub struct App<B: Backend> {
-    context: Context<B>,
-}
+pub struct TestApp {}
 
-impl<B: Backend> App<B> {
-    pub fn new(backend: B, logger: Option<&LoggerServer>) -> Self {
-        Self {
-            context: Context::compose(backend, logger),
-        }
+impl TestApp {
+    pub fn new() -> Self {
+        Self {}
     }
 
-    pub fn run(self) -> Result {
-        let Self { mut context } = self;
-        context.clear()?;
+    pub fn run<B: Backend>(self, ctx: &mut Context<B>, log: &mut Client) -> Result {
+        writeln!(log, "Clear");
+        ctx.clear()?;
 
         loop {
-            if let Some(e) = context.event()? {
+            if let Some(e) = ctx.event()? {
                 match e {
                     Event::Key { .. } => {
                         return Ok(());
@@ -29,12 +27,12 @@ impl<B: Backend> App<B> {
             }
             let mut rect = Rect::new();
             rect.xywh(0, 0, 16, 16);
-            context.render(rect, 2, |x, y, letter| {
+            ctx.render(rect, 2, |x, y, letter| {
                 let color = (x + 16 * y) as u8;
                 *letter.c = ' ';
                 *letter.bg = Color(color);
             });
-            context.draw()?;
+            ctx.draw()?;
         }
     }
 }
