@@ -1,15 +1,18 @@
-use super::TestState;
+use super::{TestState, TestView};
 use crate::app::{App, AppControl};
-use soyo::tui::{Color, Context, Key, Rect};
+use soyo::tui::{Context, Key};
+use std::time::Duration;
 
 pub struct TestApp {
     state: TestState,
+    view: TestView,
 }
 
 impl TestApp {
     pub fn new() -> Self {
         Self {
             state: TestState::new(),
+            view: TestView::new(),
         }
     }
 }
@@ -21,18 +24,17 @@ impl App for TestApp {
         }
     }
 
-    fn on_resize(&mut self, ctrl: &mut AppControl, w: i32, h: i32) {
+    fn on_resize(&mut self, _: &mut AppControl, w: i32, h: i32) {
         self.state.w = w;
         self.state.h = h;
-        ctrl.draw = true;
     }
 
-    fn render(&mut self, ctx: &mut Context) {
-        let rect = Rect::xywh(0, 0, 16, 16);
-        // ctx.render(rect, 2, |x, y, letter| {
-        //     let color = (x + 16 * y) as u8;
-        //     *letter.c = ' ';
-        //     *letter.bg = Color(color);
-        // });
+    fn on_update(&mut self, _: &mut AppControl, _: Duration) {
+        let Self { view, state } = self;
+        view.update(state);
+    }
+
+    fn render(&self, ctx: &mut Context) {
+        self.view.render(ctx);
     }
 }

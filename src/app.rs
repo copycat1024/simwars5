@@ -1,5 +1,5 @@
-mod app;
+mod main;
 mod test;
 
-pub use app::{App, AppControl};
+pub use main::{App, AppControl};
 pub use test::TestApp;

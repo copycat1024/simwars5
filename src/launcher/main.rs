@@ -4,35 +4,41 @@ use crate::{
     tag::Tag,
 };
 use soyo::{
-    logger::{Client, Server},
+    logger::{activate_logger, flush_logger, log},
     tui::{backend::Vt100, Event, Key},
     util::Result,
 };
-use std::io::{stdout, Write};
+use std::io::stdout;
 
 pub type Context = soyo::tui::Context;
 
 pub fn launch() -> Result {
-    let log = get_logger();
+    // enable framework logger
+    // activate_logger(soyo::logger::Tag::Event);
 
-    Launcher::new(&log).run()?;
+    // enable application logger
+    activate_logger(Tag::Launcher);
 
-    log.print_raw();
+    // create context
+    let vt100 = Vt100::new(stdout());
+    let ctx = Context::new(vt100);
+
+    Launcher::new(ctx).run()?;
+
+    flush_logger();
 
     Ok(())
 }
 
 struct Launcher {
     ctx: Context,
-    log: Client,
     bar: TopBar,
 }
 
 impl Launcher {
-    pub fn new(log: &Server) -> Self {
+    pub fn new(ctx: Context) -> Self {
         Self {
-            ctx: get_context(log),
-            log: log.client(Tag::Launcher),
+            ctx,
             bar: TopBar::new(),
         }
     }
@@ -77,28 +83,11 @@ impl Launcher {
     }
 
     fn start_app(&mut self) -> Result {
-        writeln!(self.log, "App start")?;
+        writeln!(log(Tag::Launcher), "App start");
         let mut app = TestApp::new();
-        app.run(&mut self.ctx, &mut self.log)?;
-        writeln!(self.log, "App end")?;
+        app.run(&mut self.ctx)?;
+        writeln!(log(Tag::Launcher), "App end");
 
         Ok(())
     }
-}
-
-fn get_context(log: &Server) -> Context {
-    let vt100 = Vt100::new(stdout());
-    Context::compose(vt100, Some(log))
-}
-
-fn get_logger() -> Server {
-    let mut log = Server::default();
-
-    // enable framework log
-    // log.enable(soyo::logger::Tag::Event);
-
-    // enable application log
-    log.enable(Tag::Launcher);
-
-    log
 }

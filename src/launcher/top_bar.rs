@@ -1,4 +1,4 @@
-use super::launcher::Context;
+use super::main::Context;
 use soyo::tui::{Color, Rect};
 
 pub struct TopBar {
@@ -36,6 +36,6 @@ impl TopBar {
     }
 
     fn get_char(&self, i: i32) -> char {
-        self.content.get(i as usize).map(|c| *c).unwrap_or(' ')
+        self.content.get(i as usize).copied().unwrap_or(' ')
     }
 }
