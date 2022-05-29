@@ -1,4 +1,5 @@
-use super::{Label, TestState};
+use super::TestState;
+use crate::app::common::Label;
 use soyo::tui::Context;
 
 pub struct TestView {

@@ -1,8 +1,5 @@
-use super::TopBar;
-use crate::{
-    app::{App, TestApp},
-    tag::Tag,
-};
+use super::{Tag, TopBar};
+use crate::app::{App, TestApp};
 use soyo::{
     log::{enable_log, flush_log, log},
     tui::{backend::Vt100, Event, Key},
