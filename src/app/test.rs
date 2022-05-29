@@ -3,7 +3,7 @@ mod label;
 mod state;
 mod view;
 
-use label::{Label, Text};
+use label::Label;
 use state::TestState;
 use view::TestView;
 

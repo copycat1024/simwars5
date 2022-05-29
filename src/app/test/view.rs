@@ -1,5 +1,5 @@
 use super::{Label, TestState};
-use soyo::tui::{Color, Context, Key, Rect};
+use soyo::tui::Context;
 
 pub struct TestView {
     top: Label,
@@ -15,6 +15,8 @@ impl TestView {
     }
 
     pub fn update(&mut self, state: &TestState) {
+        use soyo::log::debug;
+        writeln!(debug(), "{} {}", state.w, state.h);
         write!(self.top.text, "{} {}", state.w, state.h);
     }
 }

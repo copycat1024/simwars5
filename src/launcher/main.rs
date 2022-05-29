@@ -4,7 +4,7 @@ use crate::{
     tag::Tag,
 };
 use soyo::{
-    logger::{activate_logger, flush_logger, log},
+    log::{enable_log, flush_log, log},
     tui::{backend::Vt100, Event, Key},
     util::Result,
 };
@@ -14,10 +14,11 @@ pub type Context = soyo::tui::Context;
 
 pub fn launch() -> Result {
     // enable framework logger
-    // activate_logger(soyo::logger::Tag::Event);
+    // enable_log(soyo::logger::Tag::Event);
+    enable_log(soyo::log::Tag::Debug);
 
     // enable application logger
-    activate_logger(Tag::Launcher);
+    enable_log(Tag::Launcher);
 
     // create context
     let vt100 = Vt100::new(stdout());
@@ -25,7 +26,7 @@ pub fn launch() -> Result {
 
     Launcher::new(ctx).run()?;
 
-    flush_logger();
+    flush_log();
 
     Ok(())
 }
@@ -51,7 +52,10 @@ impl Launcher {
             if let Some(e) = self.ctx.event()? {
                 match e {
                     Event::Key { key } => self.on_key(key, &mut running)?,
-                    Event::Resize { w, h } => self.on_resize(w, h),
+                    Event::Resize { w, h } => {
+                        self.ctx.clear()?;
+                        self.on_resize(w, h)
+                    }
                     _ => {}
                 }
 

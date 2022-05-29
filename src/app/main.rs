@@ -23,8 +23,9 @@ pub trait App: Sized {
     fn on_end(&mut self, _ctrl: &mut AppControl) {}
     fn on_resize(&mut self, _ctrl: &mut AppControl, _w: i32, _h: i32) {}
     fn on_key(&mut self, _ctrl: &mut AppControl, _key: Key) {}
-    fn on_update(&mut self, _ctrl: &mut AppControl, _delta: Duration) {}
+    fn on_tick(&mut self, _ctrl: &mut AppControl, _delta: Duration) {}
 
+    fn update(&mut self, _ctrl: &mut AppControl) {}
     fn render(&self, ctx: &mut Context);
 
     fn run(&mut self, ctx: &mut Context) -> Result {
@@ -46,8 +47,10 @@ pub trait App: Sized {
                         ctrl.draw = true;
                         self.on_resize(&mut ctrl, w, h)
                     }
-                    Event::Update { delta } => self.on_update(&mut ctrl, delta),
+                    Event::Update { delta } => self.on_tick(&mut ctrl, delta),
                 }
+
+                self.update(&mut ctrl);
 
                 if ctrl.draw {
                     self.render(ctx);

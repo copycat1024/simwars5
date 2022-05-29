@@ -1,7 +1,6 @@
 use super::{TestState, TestView};
 use crate::app::{App, AppControl};
 use soyo::tui::{Context, Key};
-use std::time::Duration;
 
 pub struct TestApp {
     state: TestState,
@@ -27,9 +26,11 @@ impl App for TestApp {
     fn on_resize(&mut self, _: &mut AppControl, w: i32, h: i32) {
         self.state.w = w;
         self.state.h = h;
+        use soyo::log::debug;
+        writeln!(debug(), "{} {}", self.state.w, self.state.h);
     }
 
-    fn on_update(&mut self, _: &mut AppControl, _: Duration) {
+    fn update(&mut self, _: &mut AppControl) {
         let Self { view, state } = self;
         view.update(state);
     }

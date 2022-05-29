@@ -1,4 +1,4 @@
-const CUSTOM: isize = soyo::logger::Tag::Custom as isize;
+const CUSTOM: isize = soyo::log::Tag::Custom as isize;
 
 pub enum Tag {
     Launcher = CUSTOM,
