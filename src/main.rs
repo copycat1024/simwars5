@@ -1,4 +1,6 @@
-mod flux;
+#![feature(const_mut_refs)]
+
+mod mvc;
 mod launcher;
 
 fn main() {

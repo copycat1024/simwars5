@@ -1,4 +1,4 @@
-use crate::flux::common::{Renderable, Text};
+use crate::mvc::common::{Renderable, Text};
 use soyo::tui::{Color, Letter, Quad};
 
 pub struct Label {

@@ -1,5 +1,5 @@
 use super::{Tag, TopBar};
-use crate::flux::{App, TestApp};
+use crate::mvc::{TestApp, TEST_CONTROL};
 use soyo::{
     log::{enable_log, flush_log, log},
     tui::{backend::Vt100, Event, Key},
@@ -85,7 +85,7 @@ impl Launcher {
 
     fn start_app(&mut self) -> Result {
         writeln!(log(Tag::Launcher), "App start");
-        let mut app = TestApp::new();
+        let mut app = TestApp::new(TEST_CONTROL);
         app.run(&mut self.ctx)?;
         writeln!(log(Tag::Launcher), "App end");
 
