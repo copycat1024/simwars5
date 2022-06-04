@@ -1,8 +1,14 @@
+mod app;
+mod control;
 mod main;
+mod model;
 mod tag;
-mod top_bar;
+mod view;
 
-use top_bar::TopBar;
+use app::App;
+use control::LAUNCHER_CONTROL;
+use model::{LauncherEvent, LauncherModel};
+use view::LauncherView;
 
 pub use main::launch;
 pub use tag::Tag;
