@@ -1,5 +1,5 @@
+mod composer;
 mod label;
-mod layout;
 mod text;
 mod widget;
 

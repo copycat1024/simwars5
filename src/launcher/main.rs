@@ -1,5 +1,5 @@
 use super::{Tag, TopBar};
-use crate::app::{App, TestApp};
+use crate::flux::{App, TestApp};
 use soyo::{
     log::{enable_log, flush_log, log},
     tui::{backend::Vt100, Event, Key},

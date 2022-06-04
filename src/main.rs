@@ -1,6 +1,4 @@
-#![feature(once_cell)]
-
-mod app;
+mod flux;
 mod launcher;
 
 fn main() {
