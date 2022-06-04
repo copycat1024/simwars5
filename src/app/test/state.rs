@@ -1,10 +1,13 @@
+use soyo::tui::Quad;
+
 pub struct TestState {
-    pub w: i32,
-    pub h: i32,
+    pub pos: Quad,
 }
 
 impl TestState {
     pub fn new() -> Self {
-        Self { w: 0, h: 0 }
+        Self {
+            pos: Quad::xywh(0, 0, 0, 0),
+        }
     }
 }

@@ -1,8 +1,8 @@
 use super::main::Context;
-use soyo::tui::{Color, Rect};
+use soyo::tui::{Color, Quad};
 
 pub struct TopBar {
-    rect: Rect,
+    rect: Quad,
     h: i32,
     content: Vec<char>,
 }
@@ -10,15 +10,15 @@ pub struct TopBar {
 impl TopBar {
     pub fn new() -> Self {
         Self {
-            rect: Rect::xywh(0, 0, 0, 1),
+            rect: Quad::xywh(0, 0, 0, 1),
             h: 0,
             content: Vec::new(),
         }
     }
 
     pub fn render(&self, ctx: &mut Context) {
-        ctx.render(self.rect, 2, |x, _y, letter| {
-            *letter.c = self.get_char(x - self.align());
+        ctx.render(self.rect, 2, |quad, letter| {
+            *letter.c = self.get_char(quad.x - self.align());
             *letter.bg = Color::RED;
         });
     }

@@ -45,6 +45,7 @@ pub trait App: Sized {
                     Event::Key { key } => self.on_key(&mut ctrl, key),
                     Event::Resize { w, h } => {
                         ctrl.draw = true;
+                        ctx.clear()?;
                         self.on_resize(&mut ctrl, w, h)
                     }
                     Event::Update { delta } => self.on_tick(&mut ctrl, delta),
