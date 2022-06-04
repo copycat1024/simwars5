@@ -1,4 +1,4 @@
-use crate::mvc::arch::{Flow, Model};
+use soyo::mvc::{Flow, Model};
 
 #[derive(Clone, Copy)]
 pub enum TestEvent {

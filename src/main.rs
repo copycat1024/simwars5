@@ -1,7 +1,5 @@
-#![feature(const_mut_refs)]
-
-mod mvc;
 mod launcher;
+mod test;
 
 fn main() {
     launcher::launch().expect("Error")

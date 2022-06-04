@@ -1,9 +1,8 @@
-use super::TestModel;
-use crate::mvc::{
-    arch::View,
-    common::{Label, Widget},
+use soyo::{
+    mvc::View,
+    tui::{Context, Quad},
+    widget::{Label, Widget},
 };
-use soyo::tui::{Context, Quad};
 
 pub struct TestView {
     pos: Quad,
@@ -14,7 +13,7 @@ impl Default for TestView {
     fn default() -> Self {
         Self {
             pos: Quad::xywh(0, 0, 0, 0),
-            top: Widget::new(Label::new()),
+            top: Widget::new(Label::default()),
         }
     }
 }
@@ -38,13 +37,13 @@ impl View for TestView {
         self.pos.w = w;
         self.pos.h = h;
     }
+
+    fn render(&self, ctx: &mut Context) {
+        self.top.render(ctx, self.pos);
+    }
 }
 
 impl TestView {
-    pub fn render(&self, ctx: &mut Context) {
-        self.top.render(ctx, self.pos);
-    }
-
     pub fn write_top(&mut self, text: &str) {
         let top = &mut self.top.widget;
         write!(top.text, "Size {} {} | {}", self.pos.w, self.pos.h, text);
