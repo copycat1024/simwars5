@@ -45,20 +45,14 @@ impl App {
             while let Some(event) = self.dispatch.event() {
                 self.model.reduce(event, &mut self.flow);
             }
+
             if self.flow.stop {
                 break;
             }
-
-            // update view
-            self.update();
-
+            self.model.start_app(ctx, &mut self.flow)?;
             if self.flow.draw {
+                self.update_view();
                 self.draw(ctx)?;
-            }
-
-            if self.model.app {
-                self.model.start_app(ctx)?;
-                self.flow.draw = true;
             }
         }
 
@@ -77,7 +71,7 @@ impl App {
         control.dispatch(event, view, dispatch)
     }
 
-    fn update(&mut self) {
+    fn update_view(&mut self) {
         let Self {
             control,
             model,
