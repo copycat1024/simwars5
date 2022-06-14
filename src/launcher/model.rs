@@ -1,4 +1,4 @@
-use crate::test::{TestModel, TestView, TEST_CONTROL};
+use crate::test::TEST_CONTROL;
 use soyo::{
     log::debug,
     mvc::{App, Flow, Model},
@@ -14,18 +14,26 @@ pub enum LauncherEvent {
     MenuPrev,
 }
 
-const APP_LEN: usize = 2;
-const APP_LIST: [&str; APP_LEN] = ["Test app", "Unicode plane 0"];
+struct AppItem {
+    name: &'static str,
+    runtime: fn(ctx: &mut Context) -> Result,
+}
 
+const APP_LIST: [AppItem; 2] = [
+    AppItem {
+        name: "Test app",
+        runtime: |ctx| App::new(TEST_CONTROL).run(ctx),
+    },
+    AppItem {
+        name: "Unicode plane 0",
+        runtime: |_| Ok(()),
+    },
+];
+
+#[derive(Default)]
 pub struct LauncherModel {
     app: Option<usize>,
     id: usize,
-}
-
-impl Default for LauncherModel {
-    fn default() -> Self {
-        Self { app: None, id: 0 }
-    }
 }
 
 impl Model for LauncherModel {
@@ -36,7 +44,7 @@ impl Model for LauncherModel {
             Self::Event::Exit => flow.stop = true,
             Self::Event::StartApp => self.app = Some(self.id),
             Self::Event::MenuNext => {
-                if self.id < APP_LEN - 1 {
+                if self.id < APP_LIST.len() - 1 {
                     self.id += 1;
                     flow.draw = true;
                 }
@@ -52,8 +60,8 @@ impl Model for LauncherModel {
 }
 
 impl LauncherModel {
-    pub fn app_list(&self) -> std::array::IntoIter<&str, APP_LEN> {
-        APP_LIST.into_iter()
+    pub fn app_list(&self) -> Vec<&str> {
+        APP_LIST.into_iter().map(|app| app.name).collect()
     }
 
     pub fn item(&self) -> usize {
@@ -74,9 +82,10 @@ impl LauncherModel {
     }
 
     fn run_app(&mut self, ctx: &mut Context, id: usize) -> Result {
-        match id {
-            0 => App::<TestModel, TestView>::new(TEST_CONTROL).run(ctx),
-            _ => Ok(()),
+        if id < APP_LIST.len() {
+            (APP_LIST[id].runtime)(ctx)
+        } else {
+            unreachable!()
         }
     }
 }

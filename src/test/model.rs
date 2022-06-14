@@ -5,13 +5,8 @@ pub enum TestEvent {
     Exit,
 }
 
+#[derive(Default)]
 pub struct TestModel {}
-
-impl Default for TestModel {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Model for TestModel {
     type Event = TestEvent;
