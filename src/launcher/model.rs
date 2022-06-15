@@ -1,4 +1,4 @@
-use crate::test::TEST_CONTROL;
+use crate::app::{battle::BATTLE_CONTROL, test::TEST_CONTROL, ubmp::UBMP_CONTROL};
 use soyo::{
     log::debug,
     mvc::{App, Flow, Model},
@@ -19,14 +19,18 @@ struct AppItem {
     runtime: fn(ctx: &mut Context) -> Result,
 }
 
-const APP_LIST: [AppItem; 2] = [
+const APP_LIST: [AppItem; 3] = [
     AppItem {
         name: "Test app",
         runtime: |ctx| App::new(TEST_CONTROL).run(ctx),
     },
     AppItem {
         name: "Unicode plane 0",
-        runtime: |_| Ok(()),
+        runtime: |ctx| App::new(UBMP_CONTROL).run(ctx),
+    },
+    AppItem {
+        name: "Battle",
+        runtime: |ctx| App::new(BATTLE_CONTROL).run(ctx),
     },
 ];
 

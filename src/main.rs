@@ -1,5 +1,6 @@
+mod app;
 mod launcher;
-mod test;
+mod usym;
 mod widget;
 
 fn main() {

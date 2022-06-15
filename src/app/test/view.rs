@@ -24,14 +24,9 @@ impl Default for TestView {
 impl View for TestView {
     fn setup(&mut self) {
         self.top.composer.set(|layer| layer.set_h(1).rise_z());
-        self.menu.composer.set(|layer| {
-            layer
-                .set_x(layer.w / 3)
-                .set_y(5)
-                .set_w(layer.w / 3)
-                .set_h(layer.h - 11)
-                .rise_z()
-        });
+        self.menu
+            .composer
+            .set(|layer| layer.center(layer.w / 3, layer.h - 20).rise_z());
         self.menu.widget.set_list(["a", "b"]);
     }
 
