@@ -1,8 +1,6 @@
 use super::{LauncherEvent, LauncherModel, LauncherView};
-use soyo::{
-    mvc::Control,
-    tui::{Event, Key},
-};
+use crate::mvc::Control;
+use soyo::tui::{Event, Key};
 
 pub const LAUNCHER_CONTROL: Control<LauncherModel, LauncherView> = Control::new(
     |event, _view, dispatch| {

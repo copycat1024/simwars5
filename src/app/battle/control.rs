@@ -1,8 +1,6 @@
 use super::{BattleEvent, BattleModel, BattleView};
-use soyo::{
-    mvc::Control,
-    tui::{Event, Key},
-};
+use crate::mvc::Control;
+use soyo::tui::{Event, Key};
 
 pub const BATTLE_CONTROL: Control<BattleModel, BattleView> = Control::new(
     |event, _view, dispatch| {

@@ -1,24 +1,31 @@
-use super::{LauncherEvent, LauncherModel, LauncherView};
-use crate::mvc::{Control, Dispatch, Flow, Model, View};
+use super::{Control, Dispatch, Flow, Model, View};
 use soyo::{
     tui::{Context, Event},
     util::Result,
 };
 
-pub struct App {
-    dispatch: Dispatch<LauncherEvent>,
-    model: LauncherModel,
-    view: LauncherView,
-    control: Control<LauncherModel, LauncherView>,
+pub struct App<M, V>
+where
+    M: Model,
+    V: View,
+{
+    dispatch: Dispatch<M::Event>,
+    model: M,
+    view: V,
+    control: Control<M, V>,
     flow: Flow,
 }
 
-impl App {
-    pub fn new(control: Control<LauncherModel, LauncherView>) -> Self {
+impl<M, V> App<M, V>
+where
+    M: Model,
+    V: View,
+{
+    pub fn new(control: Control<M, V>) -> Self {
         Self {
             dispatch: Dispatch::default(),
-            model: LauncherModel::default(),
-            view: LauncherView::default(),
+            model: M::default(),
+            view: V::default(),
             control,
             flow: Flow::default(),
         }
@@ -45,13 +52,19 @@ impl App {
             while let Some(event) = self.dispatch.event() {
                 self.model.reduce(event, &mut self.flow);
             }
-
             if self.flow.stop {
                 break;
             }
-            self.model.start_app(ctx, &mut self.flow)?;
+
+            // update view
+            self.update();
+
+            if self.flow.clear {
+                self.flow.clear = false;
+                ctx.clear()?;
+            }
+
             if self.flow.draw {
-                self.update_view();
                 self.draw(ctx)?;
             }
         }
@@ -71,7 +84,7 @@ impl App {
         control.dispatch(event, view, dispatch)
     }
 
-    fn update_view(&mut self) {
+    fn update(&mut self) {
         let Self {
             control,
             model,

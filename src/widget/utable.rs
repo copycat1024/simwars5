@@ -1,7 +1,5 @@
-use soyo::{
-    tui::{Color, Letter, Quad},
-    widget::Render,
-};
+use crate::view::Render;
+use soyo::tui::{Color, Letter, Quad};
 use std::char::{from_digit, from_u32};
 use unic_ucd_category::GeneralCategory;
 use unicode_bidi::bidi_class;

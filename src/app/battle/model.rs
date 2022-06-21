@@ -1,4 +1,4 @@
-use soyo::mvc::{Flow, Model};
+use crate::mvc::{Flow, Model};
 
 #[derive(Clone, Copy)]
 pub enum BattleEvent {

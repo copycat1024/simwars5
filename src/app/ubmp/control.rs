@@ -1,8 +1,6 @@
 use super::{UbmpEvent, UbmpModel, UbmpView};
-use soyo::{
-    mvc::Control,
-    tui::{Event, Key},
-};
+use crate::mvc::Control;
+use soyo::tui::{Event, Key};
 
 pub const UBMP_CONTROL: Control<UbmpModel, UbmpView> = Control::new(
     |event, _view, dispatch| {

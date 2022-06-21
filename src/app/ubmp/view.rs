@@ -1,52 +1,37 @@
-use crate::widget::Utable;
-use soyo::{
+use super::UbmpComposer;
+use crate::{
     mvc::View,
-    tui::Context,
-    widget::{Label, Layer, Widget},
+    view::{Node, NodeRef},
 };
+use soyo::tui::Context;
 
 pub struct UbmpView {
-    screen: Layer,
-    top: Widget<Label>,
-    table: Widget<Utable>,
+    root: Node,
+    root_ref: NodeRef<UbmpComposer>,
 }
 
 impl Default for UbmpView {
     fn default() -> Self {
-        Self {
-            screen: Layer::screen(0, 0),
-            top: Widget::new(Label::default()),
-            table: Widget::new(Utable::default()),
-        }
+        let (root, root_ref) = Node::root(UbmpComposer::new());
+        Self { root, root_ref }
     }
 }
 
 impl View for UbmpView {
-    fn setup(&mut self) {
-        self.top.composer.set(|layer| layer.set_h(1).rise_z());
-
-        let (tw, th) = self.table.widget.get_wh();
-        self.table
-            .composer
-            .set(move |layer| layer.center(tw, th).rise_z());
-    }
+    fn setup(&mut self) {}
 
     fn resize(&mut self, w: i32, h: i32) {
-        self.screen = Layer::screen(w, h);
+        self.root.resize(w, h);
+        self.root.compose();
     }
 
     fn render(&self, ctx: &mut Context) {
-        self.top.render(ctx, self.screen);
-        self.table.render(ctx, self.screen);
+        self.root.render(ctx);
     }
 }
 
 impl UbmpView {
     pub fn set_cell(&mut self, cell: u8) {
-        let top = &mut self.top.widget;
-        let table = &mut self.table.widget;
-
-        write!(top.text, "Cell {}", cell);
-        table.set_cell(cell);
+        self.root_ref.view(|view| view.set_cell(cell));
     }
 }

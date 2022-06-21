@@ -1,10 +1,8 @@
-use crate::app::{battle::BATTLE_CONTROL, test::TEST_CONTROL, ubmp::UBMP_CONTROL};
-use soyo::{
-    log::debug,
+use crate::{
+    app::{battle::BATTLE_CONTROL, test::TEST_CONTROL, ubmp::UBMP_CONTROL},
     mvc::{App, Flow, Model},
-    tui::Context,
-    util::Result,
 };
+use soyo::{log::debug, tui::Context, util::Result};
 
 #[derive(Clone, Copy)]
 pub enum LauncherEvent {

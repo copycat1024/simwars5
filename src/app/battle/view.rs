@@ -1,59 +1,36 @@
-use crate::widget::{Bullet, Field};
-use soyo::{
-    mvc::View,
-    tui::Context,
-    widget::{Label, Layer, Widget},
-};
+use super::BattleComposer;
+use crate::{mvc::View, view::Node};
+use soyo::tui::Context;
 
 pub struct BattleView {
-    screen: Layer,
-    top: Widget<Label>,
-    field: Widget<Field>,
-    bullet: Widget<Bullet>,
+    root: Node,
 }
 
 impl Default for BattleView {
     fn default() -> Self {
-        Self {
-            screen: Layer::screen(0, 0),
-            top: Widget::new(Label::default()),
-            field: Widget::new(Field::new(7, 3, 16, 8)),
-            bullet: Widget::new(Bullet::new('\u{26e8}')),
-            // bullet: Widget::new(Bullet::new('\u{2694}')),
-        }
+        let (root, _) = Node::root(BattleComposer::new());
+        Self { root }
     }
 }
 
 impl View for BattleView {
-    fn setup(&mut self) {
-        self.top.composer.set(|layer| layer.set_h(1).rise_z());
-
-        let (tw, th) = self.field.widget.get_wh();
-        self.field
-            .composer
-            .set(move |layer| layer.center(tw, th).rise_z());
-        self.bullet
-            .composer
-            .set(move |layer| layer.set_x(2).set_y(2).set_w(10).set_h(1).rise_z());
-    }
+    fn setup(&mut self) {}
 
     fn resize(&mut self, w: i32, h: i32) {
-        self.screen = Layer::screen(w, h);
+        self.root.resize(w, h);
+        self.root.compose();
     }
 
     fn render(&self, ctx: &mut Context) {
-        self.top.render(ctx, self.screen);
-        self.field.render(ctx, self.screen);
-        self.bullet.render(ctx, self.screen);
+        self.root.render(ctx);
+
+        // let cell = self.field.widget.get_cell(0, 0, 1);
+        // for army in self.army.iter() {
+        //     army.render(ctx, cell);
+        // }
     }
 }
 
 impl BattleView {
-    pub fn set_cell(&mut self, cell: u8) {
-        let top = &mut self.top.widget;
-        let bullet = &mut self.bullet.widget;
-
-        write!(top.text, "Cell {}", cell);
-        write!(bullet.text, "100");
-    }
+    pub fn set_cell(&mut self, _: u8) {}
 }

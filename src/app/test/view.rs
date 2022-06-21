@@ -1,52 +1,78 @@
-use crate::widget::Menu;
-use soyo::{
+use crate::{
     mvc::View,
-    tui::Context,
-    widget::{Label, Layer, Widget},
+    view::{Attribute, Compose, Node, NodeList, NodeRef, Render},
+};
+use soyo::{
+    tui::{Color, Context, Letter, Quad},
+    util::FlexVec,
 };
 
 pub struct TestView {
-    screen: Layer,
-    top: Widget<Label>,
-    menu: Widget<Menu>,
+    root: Node,
 }
 
 impl Default for TestView {
     fn default() -> Self {
+        let view = TestComposer::new();
         Self {
-            screen: Layer::screen(0, 0),
-            top: Widget::new(Label::default()),
-            menu: Widget::new(Menu::default()),
+            root: Node::root(view).0,
         }
     }
 }
 
 impl View for TestView {
-    fn setup(&mut self) {
-        self.top.composer.set(|layer| layer.set_h(1).rise_z());
-        self.menu
-            .composer
-            .set(|layer| layer.center(layer.w / 3, layer.h - 20).rise_z());
-        self.menu.widget.set_list(["a", "b"]);
-    }
+    fn setup(&mut self) {}
 
     fn resize(&mut self, w: i32, h: i32) {
-        self.screen = Layer::screen(w, h);
+        self.root.resize(w, h);
+        self.root.compose();
     }
 
     fn render(&self, ctx: &mut Context) {
-        self.top.render(ctx, self.screen);
-        self.menu.render(ctx, self.screen);
+        self.root.render(ctx);
     }
 }
 
-impl TestView {
-    pub fn write_top(&mut self, text: &str) {
-        let top = &mut self.top.widget;
-        write!(
-            top.text,
-            "Size {} {} | {}",
-            self.screen.w, self.screen.h, text
-        );
+struct TestComposer {
+    bullet: NodeRef<Bullet>,
+}
+
+impl TestComposer {
+    fn new() -> Self {
+        Self {
+            bullet: NodeRef::default(),
+        }
+    }
+}
+
+impl Compose for TestComposer {
+    fn register(&mut self, children: &mut NodeList) {
+        let bullet = Bullet::new('-');
+        self.bullet = children.register_renderer(bullet);
+    }
+
+    fn compose(&mut self, me: &Attribute, _: &mut NodeList) {
+        self.bullet.compose(|child| {
+            child.frame = me.frame.set_h(1);
+        })
+    }
+}
+
+pub struct Bullet {
+    pub text: FlexVec<char>,
+}
+
+impl Bullet {
+    pub fn new(fill: char) -> Self {
+        Self {
+            text: FlexVec::new(fill),
+        }
+    }
+}
+
+impl Render for Bullet {
+    fn render(&self, quad: Quad, letter: &mut Letter) {
+        *letter.bg = Color::BLUE;
+        *letter.c = self.text[quad.x - 3];
     }
 }

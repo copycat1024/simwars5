@@ -1,47 +1,32 @@
-use crate::widget::Menu;
-use soyo::{
+use super::LauncherComposer;
+use crate::{
     mvc::View,
-    tui::Context,
-    widget::{Label, Layer, Widget},
+    view::{Node, NodeRef},
 };
+use soyo::tui::Context;
 
 pub struct LauncherView {
-    screen: Layer,
-    top: Widget<Label>,
-    menu: Widget<Menu>,
+    root: Node,
+    root_ref: NodeRef<LauncherComposer>,
 }
 
 impl Default for LauncherView {
     fn default() -> Self {
-        Self {
-            screen: Layer::screen(0, 0),
-            top: Widget::new(Label::default()),
-            menu: Widget::new(Menu::default()),
-        }
+        let (root, root_ref) = Node::root(LauncherComposer::new());
+        Self { root, root_ref }
     }
 }
 
 impl View for LauncherView {
-    fn setup(&mut self) {
-        self.top.composer.set(|layer| layer.set_h(1).rise_z());
-        self.menu.composer.set(|layer| {
-            layer
-                .set_x(layer.w / 3)
-                .set_y(5)
-                .set_w(layer.w / 3)
-                .set_h(layer.h - 11)
-                .rise_z()
-        });
-    }
+    fn setup(&mut self) {}
 
     fn resize(&mut self, w: i32, h: i32) {
-        self.screen = Layer::screen(w, h);
+        self.root.resize(w, h);
+        self.root.compose();
     }
 
     fn render(&self, ctx: &mut Context) {
-
-        self.top.render(ctx, self.screen);
-        self.menu.render(ctx, self.screen);
+        self.root.render(ctx);
     }
 }
 
@@ -50,15 +35,14 @@ impl LauncherView {
     where
         T: IntoIterator<Item = &'a str>,
     {
-        self.menu.widget.set_list(iter);
+        self.root_ref.view(|view| view.set_menu(iter));
     }
 
     pub fn set_item(&mut self, item: usize) {
-        self.menu.widget.set_item(item);
+        self.root_ref.view(|view| view.set_item(item));
     }
 
     pub fn write_top(&mut self, text: &str) {
-        let top = &mut self.top.widget;
-        write!(top.text, "{}", text);
+        self.root_ref.view(|view| view.write_top(text));
     }
 }

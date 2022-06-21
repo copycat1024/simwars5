@@ -1,8 +1,6 @@
 use super::{TestModel, TestView};
-use soyo::{
-    mvc::{Control, Model},
-    tui::{Event, Key},
-};
+use crate::mvc::{Control, Model};
+use soyo::tui::{Event, Key};
 
 pub const TEST_CONTROL: Control<TestModel, TestView> = Control::new(
     |event, _view, dispatch| {
@@ -12,7 +10,5 @@ pub const TEST_CONTROL: Control<TestModel, TestView> = Control::new(
             }
         }
     },
-    |_model, view| {
-        view.write_top("\u{2694}  Welcome");
-    },
+    |_model, _view| {},
 );

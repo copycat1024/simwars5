@@ -1,6 +1,7 @@
+use crate::view::Render;
 use soyo::{
     tui::{Color, Letter, Quad},
-    widget::{FlexVec, Render},
+    util::FlexVec,
 };
 
 pub struct Menu {

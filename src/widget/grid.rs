@@ -1,17 +1,17 @@
-use crate::usym::hbox;
-use soyo::{
-    tui::{Letter, Quad},
-    widget::Render,
+use crate::{
+    usym::hbox,
+    view::{Frame, Render},
 };
+use soyo::tui::{Letter, Quad};
 
-pub struct Field {
+pub struct Grid {
     w: i32,
     h: i32,
     sw: i32,
     sh: i32,
 }
 
-impl Field {
+impl Grid {
     pub fn new(w: i32, h: i32, sw: i32, sh: i32) -> Self {
         Self { w, h, sw, sh }
     }
@@ -19,6 +19,12 @@ impl Field {
     pub fn get_wh(&self) -> (i32, i32) {
         let Self { w, h, sw, sh } = self;
         (w * (sw + 1) + 1, h * (sh + 1) + 1)
+    }
+
+    pub fn get_cell(&self, x: i32, y: i32, z: i32) -> Frame {
+        let x = x * (self.sw + 1);
+        let y = y * (self.sh + 1);
+        Frame::screen(self.sw, self.h).set_x(x).set_y(y).set_z(z)
     }
 
     fn render_intersect(&self, quad: Quad, letter: &mut Letter) {
@@ -56,7 +62,7 @@ impl Field {
     }
 }
 
-impl Default for Field {
+impl Default for Grid {
     fn default() -> Self {
         Self {
             w: 7,
@@ -67,7 +73,7 @@ impl Default for Field {
     }
 }
 
-impl Render for Field {
+impl Render for Grid {
     fn render(&self, quad: Quad, letter: &mut Letter) {
         let v = quad.x % (self.sw + 1) == 0;
         let h = quad.y % (self.sh + 1) == 0;
