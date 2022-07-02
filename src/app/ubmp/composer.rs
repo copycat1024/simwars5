@@ -8,8 +8,8 @@ pub struct UbmpComposer {
     table: NodeRef<Utable>,
 }
 
-impl UbmpComposer {
-    pub fn new() -> Self {
+impl Default for UbmpComposer {
+    fn default() -> Self {
         Self {
             top: NodeRef::default(),
             table: NodeRef::default(),

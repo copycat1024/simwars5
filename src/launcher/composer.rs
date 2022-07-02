@@ -8,8 +8,8 @@ pub struct LauncherComposer {
     menu: NodeRef<Menu>,
 }
 
-impl LauncherComposer {
-    pub fn new() -> Self {
+impl Default for LauncherComposer {
+    fn default() -> Self {
         Self {
             top: NodeRef::default(),
             menu: NodeRef::default(),

@@ -1,4 +1,4 @@
-use super::{LauncherEvent, LauncherModel, LauncherView};
+use super::{LauncherComposer, LauncherEvent, LauncherModel};
 use crate::mvc::{Control, Dispatch, Flow, Model, View};
 use soyo::{
     tui::{Context, Event},
@@ -8,17 +8,17 @@ use soyo::{
 pub struct App {
     dispatch: Dispatch<LauncherEvent>,
     model: LauncherModel,
-    view: LauncherView,
-    control: Control<LauncherModel, LauncherView>,
+    view: View<LauncherComposer>,
+    control: Control<LauncherModel, LauncherComposer>,
     flow: Flow,
 }
 
 impl App {
-    pub fn new(control: Control<LauncherModel, LauncherView>) -> Self {
+    pub fn new(control: Control<LauncherModel, LauncherComposer>) -> Self {
         Self {
             dispatch: Dispatch::default(),
             model: LauncherModel::default(),
-            view: LauncherView::default(),
+            view: View::default(),
             control,
             flow: Flow::default(),
         }
@@ -68,7 +68,7 @@ impl App {
             ..
         } = self;
 
-        control.dispatch(event, view, dispatch)
+        control.dispatch(event, view.node(), dispatch)
     }
 
     fn update_view(&mut self) {
@@ -79,7 +79,7 @@ impl App {
             ..
         } = self;
 
-        control.update(model, view);
+        control.update(model, view.node_mut());
     }
 
     fn draw(&mut self, ctx: &mut Context) -> Result {

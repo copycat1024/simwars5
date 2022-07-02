@@ -1,8 +1,8 @@
-use super::{UbmpEvent, UbmpModel, UbmpView};
+use super::{UbmpComposer, UbmpEvent, UbmpModel};
 use crate::mvc::Control;
 use soyo::tui::{Event, Key};
 
-pub const UBMP_CONTROL: Control<UbmpModel, UbmpView> = Control::new(
+pub const UBMP_CONTROL: Control<UbmpModel, UbmpComposer> = Control::new(
     |event, _view, dispatch| {
         if let Event::Key { key } = event {
             if key == Key::ESC {
@@ -15,6 +15,8 @@ pub const UBMP_CONTROL: Control<UbmpModel, UbmpView> = Control::new(
         }
     },
     |model, view| {
-        view.set_cell(model.cell());
+        view.call_mut(|view| {
+            view.set_cell(model.cell());
+        })
     },
 );

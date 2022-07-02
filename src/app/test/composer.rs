@@ -7,38 +7,12 @@ use soyo::{
     util::FlexVec,
 };
 
-pub struct TestView {
-    root: Node,
-}
-
-impl Default for TestView {
-    fn default() -> Self {
-        let view = TestComposer::new();
-        Self {
-            root: Node::root(view).0,
-        }
-    }
-}
-
-impl View for TestView {
-    fn setup(&mut self) {}
-
-    fn resize(&mut self, w: i32, h: i32) {
-        self.root.resize(w, h);
-        self.root.compose();
-    }
-
-    fn render(&self, ctx: &mut Context) {
-        self.root.render(ctx);
-    }
-}
-
-struct TestComposer {
+pub struct TestComposer {
     bullet: NodeRef<Bullet>,
 }
 
-impl TestComposer {
-    fn new() -> Self {
+impl Default for TestComposer {
+    fn default() -> Self {
         Self {
             bullet: NodeRef::default(),
         }

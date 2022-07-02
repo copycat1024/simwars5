@@ -7,8 +7,8 @@ pub struct BattleComposer {
     field: NodeRef<Grid>,
 }
 
-impl BattleComposer {
-    pub fn new() -> Self {
+impl Default for BattleComposer {
+    fn default() -> Self {
         Self {
             field: NodeRef::default(),
         }

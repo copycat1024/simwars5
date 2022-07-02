@@ -106,6 +106,16 @@ impl<T: 'static> NodeRef<T> {
     {
         self.widget.update(callback)
     }
+
+    pub fn call_mut<F>(&mut self, f: F)
+    where
+        F: Fn(&mut T),
+    {
+        if let Some(mut widget) = self.widget.upgrade() {
+            let mut widget = widget.borrow_mut();
+            f(&mut widget)
+        }
+    }
 }
 
 impl<T: 'static> Default for NodeRef<T> {

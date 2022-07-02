@@ -1,31 +1,32 @@
 use super::{Control, Dispatch, Flow, Model, View};
+use crate::view::Compose;
 use soyo::{
     tui::{Context, Event},
     util::Result,
 };
 
-pub struct App<M, V>
+pub struct App<M, C>
 where
     M: Model,
-    V: View,
+    C: Compose + Default,
 {
+    flow: Flow,
     dispatch: Dispatch<M::Event>,
     model: M,
-    view: V,
-    control: Control<M, V>,
-    flow: Flow,
+    view: View<C>,
+    control: Control<M, C>,
 }
 
-impl<M, V> App<M, V>
+impl<M, C> App<M, C>
 where
     M: Model,
-    V: View,
+    C: Compose + Default,
 {
-    pub fn new(control: Control<M, V>) -> Self {
+    pub fn new(control: Control<M, C>) -> Self {
         Self {
             dispatch: Dispatch::default(),
             model: M::default(),
-            view: V::default(),
+            view: View::default(),
             control,
             flow: Flow::default(),
         }
@@ -81,7 +82,7 @@ where
             ..
         } = self;
 
-        control.dispatch(event, view, dispatch)
+        control.dispatch(event, view.node(), dispatch)
     }
 
     fn update(&mut self) {
@@ -92,7 +93,7 @@ where
             ..
         } = self;
 
-        control.update(model, view);
+        control.update(model, view.node_mut());
     }
 
     fn draw(&mut self, ctx: &mut Context) -> Result {
