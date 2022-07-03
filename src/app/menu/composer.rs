@@ -3,18 +3,10 @@ use crate::{
     widget::Menu,
 };
 
+#[derive(Default)]
 pub struct LauncherComposer {
     top: NodeRef<Label>,
     menu: NodeRef<Menu>,
-}
-
-impl Default for LauncherComposer {
-    fn default() -> Self {
-        Self {
-            top: NodeRef::default(),
-            menu: NodeRef::default(),
-        }
-    }
 }
 
 impl Compose for LauncherComposer {

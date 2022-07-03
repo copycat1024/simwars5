@@ -3,6 +3,7 @@ use crate::mvc::Control;
 use soyo::tui::{Event, Key};
 
 pub const LAUNCHER_CONTROL: Control<LauncherModel, LauncherComposer> = Control::new(
+    || (LauncherModel::default(), LauncherComposer::default()),
     |event, _view, dispatch| {
         if let Event::Key { key } = event {
             if key == Key::ESC {

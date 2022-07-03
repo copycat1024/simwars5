@@ -1,6 +1,6 @@
-use super::Tag;
+use super::{Tag, LAUNCHER_CONTROL};
 use crate::{
-    app::{battle::BATTLE_CONTROL, menu::LAUNCHER_CONTROL, test::TEST_CONTROL, ubmp::UBMP_CONTROL},
+    app::{battle::BATTLE_CONTROL, test::TEST_CONTROL, ubmp::UBMP_CONTROL},
     mvc::App,
 };
 use soyo::{

@@ -8,7 +8,7 @@ use soyo::{
 pub struct App<M, C>
 where
     M: Model,
-    C: Compose + Default,
+    C: Compose,
 {
     flow: Flow,
     dispatch: Dispatch<M::Event>,
@@ -20,26 +20,26 @@ where
 impl<M, C> App<M, C>
 where
     M: Model,
-    C: Compose + Default,
+    C: Compose,
 {
     pub fn new(control: Control<M, C>) -> Self {
+        let (model, composer) = control.init();
         Self {
             dispatch: Dispatch::default(),
-            model: M::default(),
-            view: View::default(),
+            model,
+            view: View::new(composer),
             control,
             flow: Flow::default(),
         }
     }
 
-    pub fn run(&mut self, ctx: &mut Context) -> Result {
+    pub fn run(&mut self, ctx: &mut Context) -> Result<usize> {
         let (w, h) = ctx.size();
 
-        self.view.setup();
         self.resize(ctx, w, h)?;
 
         // main loop
-        loop {
+        'main: loop {
             // handle native events
             while let Some(event) = ctx.event()? {
                 if let Event::Resize { w, h } = event {
@@ -52,26 +52,22 @@ where
             // handle domain event
             while let Some(event) = self.dispatch.event() {
                 self.model.reduce(event, &mut self.flow);
-            }
-            if self.flow.stop {
-                break;
+                if self.flow.stop {
+                    break 'main;
+                }
             }
 
             // update view
             self.update();
 
-            if self.flow.clear {
-                self.flow.clear = false;
-                ctx.clear()?;
-            }
-
-            if self.flow.draw {
-                self.draw(ctx)?;
-            }
+            // draw
+            self.view.draw(ctx, &mut self.flow)?;
         }
 
         // clean up app
-        ctx.clear()
+        ctx.clear()?;
+
+        Ok(self.flow.code)
     }
 
     fn dispatch(&mut self, event: Event) {
@@ -94,12 +90,6 @@ where
         } = self;
 
         control.update(model, view.node_mut());
-    }
-
-    fn draw(&mut self, ctx: &mut Context) -> Result {
-        self.flow.draw = false;
-        self.view.render(ctx);
-        ctx.draw()
     }
 
     fn resize(&mut self, ctx: &mut Context, w: i32, h: i32) -> Result {

@@ -3,6 +3,7 @@ use crate::mvc::{Control, Model};
 use soyo::tui::{Event, Key};
 
 pub const TEST_CONTROL: Control<TestModel, TestComposer> = Control::new(
+    || (TestModel::default(), TestComposer::default()),
     |event, _view, dispatch| {
         if let Event::Key { key } = event {
             if key == Key::ESC {

@@ -1,22 +1,12 @@
-use crate::{
-    mvc::View,
-    view::{Attribute, Compose, Node, NodeList, NodeRef, Render},
-};
+use crate::view::{Attribute, Compose, NodeList, NodeRef, Render};
 use soyo::{
-    tui::{Color, Context, Letter, Quad},
+    tui::{Color, Letter, Quad},
     util::FlexVec,
 };
 
+#[derive(Default)]
 pub struct TestComposer {
     bullet: NodeRef<Bullet>,
-}
-
-impl Default for TestComposer {
-    fn default() -> Self {
-        Self {
-            bullet: NodeRef::default(),
-        }
-    }
 }
 
 impl Compose for TestComposer {

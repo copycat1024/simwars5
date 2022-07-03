@@ -7,6 +7,7 @@ where
     M: Model,
     C: Compose,
 {
+    init: fn() -> (M, C),
     dispatch: fn(Event, &NodeRef<C>, &mut Dispatch<M::Event>),
     update: fn(&M, &mut NodeRef<C>),
 }
@@ -17,10 +18,19 @@ where
     C: Compose,
 {
     pub const fn new(
+        init: fn() -> (M, C),
         dispatch: fn(Event, &NodeRef<C>, &mut Dispatch<M::Event>),
         update: fn(&M, &mut NodeRef<C>),
     ) -> Self {
-        Self { dispatch, update }
+        Self {
+            init,
+            dispatch,
+            update,
+        }
+    }
+
+    pub fn init(&self) -> (M, C) {
+        (self.init)()
     }
 
     pub fn dispatch(&self, event: Event, view: &NodeRef<C>, dispatch: &mut Dispatch<M::Event>) {

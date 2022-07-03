@@ -3,16 +3,9 @@ use crate::{
     widget::Grid,
 };
 
+#[derive(Default)]
 pub struct BattleComposer {
     field: NodeRef<Grid>,
-}
-
-impl Default for BattleComposer {
-    fn default() -> Self {
-        Self {
-            field: NodeRef::default(),
-        }
-    }
 }
 
 impl Compose for BattleComposer {

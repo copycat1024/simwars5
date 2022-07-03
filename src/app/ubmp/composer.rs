@@ -3,18 +3,10 @@ use crate::{
     widget::Utable,
 };
 
+#[derive(Default)]
 pub struct UbmpComposer {
     top: NodeRef<Label>,
     table: NodeRef<Utable>,
-}
-
-impl Default for UbmpComposer {
-    fn default() -> Self {
-        Self {
-            top: NodeRef::default(),
-            table: NodeRef::default(),
-        }
-    }
 }
 
 impl Compose for UbmpComposer {

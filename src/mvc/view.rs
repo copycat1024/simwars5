@@ -1,28 +1,36 @@
+use super::Flow;
 use crate::view::{Compose, Node, NodeRef};
-use soyo::tui::Context;
+use soyo::{tui::Context, util::Result};
 
-pub struct View<T: 'static + Default> {
+pub struct View<T: 'static> {
     root: Node,
     root_ref: NodeRef<T>,
 }
 
-impl<T: 'static + Default + Compose> Default for View<T> {
-    fn default() -> Self {
-        let (root, root_ref) = Node::root(T::default());
+impl<T: 'static + Compose> View<T> {
+    pub fn new(node: T) -> Self {
+        let (root, root_ref) = Node::root(node);
         Self { root, root_ref }
     }
-}
-
-impl<T: 'static + Default + Compose> View<T> {
-    pub fn setup(&mut self) {}
 
     pub fn resize(&mut self, w: i32, h: i32) {
         self.root.resize(w, h);
         self.root.compose();
     }
 
-    pub fn render(&self, ctx: &mut Context) {
-        self.root.render(ctx);
+    pub fn draw(&self, ctx: &mut Context, flow: &mut Flow) -> Result {
+        if flow.clear {
+            flow.clear = false;
+            ctx.clear()?;
+        }
+
+        if flow.draw {
+            flow.draw = false;
+            self.root.render(ctx);
+            ctx.draw()?;
+        }
+
+        Ok(())
     }
 
     pub fn node(&self) -> &NodeRef<T> {
